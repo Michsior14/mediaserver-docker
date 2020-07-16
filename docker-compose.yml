@@ -34,14 +34,11 @@ services:
           - bazarr
           - jackett
     ports:
-      - "${RADARR_PORT}:7878"
-      - "${BAZARR_PORT}:6767"
-      - "${SONARR_PORT}:8989"
-      - "${NZBGET_PORT}:6789"
-      - "${JACKETT_PORT}:9117"
-      - "${TRANS_WEBUI_PORT}:5656"
-      - "${TRANS_CONNECTION_PORT}:51413"
-      - "${TRANS_CONNECTION_PORT}:51413/udp"
+      - "${RADARR_PORT}:${RADARR_PORT}"
+      - "${BAZARR_PORT}:${BAZARR_PORT}"
+      - "${SONARR_PORT}:${SONARR_PORT}"
+      - "${NZBGET_PORT}:${NZBGET_PORT}"
+      - "${JACKETT_PORT}:${JACKETT_PORT}"
       - "${TRANS_WEBUI_PORT}:${TRANS_WEBUI_PORT}"
       # TRANS_CONNECTION_PORT may need to be port forwarded by your VPN
       - "${TRANS_CONNECTION_PORT}:${TRANS_CONNECTION_PORT}"
@@ -50,7 +47,7 @@ services:
       - LOCAL_NETWORK=${LOCAL_NETWORK}
       - IPTABLES_MASQ=0
       # space separated list of docker service names to make addressable
-      - SERVICE_NAMES=filebot sonarr radarr bazarr jackett heimdall tautulli plex
+      - SERVICE_NAMES=filebot heimdall tautulli plex
       # local TLD to use when routing DNS requests which requires aliases for each service to be addressable from within the wireguard network
       # - LOCAL_TLD=ghost
     volumes:
