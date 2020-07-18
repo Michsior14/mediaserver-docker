@@ -27,7 +27,6 @@ services:
     networks:
       default:
         aliases:
-          - nzbget
           - transmission
           - sonarr
           - radarr
@@ -37,7 +36,6 @@ services:
       - "${RADARR_PORT}:7878"
       - "${BAZARR_PORT}:6767"
       - "${SONARR_PORT}:8989"
-      - "${NZBGET_PORT}:6789"
       - "${JACKETT_PORT}:9117"
       - "${TRANS_WEBUI_PORT}:${TRANS_WEBUI_PORT}"
       # TRANS_CONNECTION_PORT may need to be port forwarded by your VPN
@@ -103,26 +101,6 @@ services:
       - ${DOWNLOAD_DIR}:/downloads
       - ${MEDIA_DIR}:/media
       - ${BASE_DIR}:/share
-
-  nzbget:
-    image: ghostserverd/nzbget
-    container_name: nzbget
-    restart: always
-    network_mode: "service:wireguard"
-    depends_on:
-      - wireguard
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-      - NZBGET_WEB_USER=${NZBGET_WEB_USER}
-      - NZBGET_WEB_PASS=${NZBGET_WEB_PASS}
-      - NZBGET_MAIN_DIR=${NZBGET_MAIN_DIR}
-      - NZBGET_SCRIPT_DIR=${NZBGET_SCRIPT_DIR}
-      - FILEBOT_PORT=${FILEBOT_PORT}
-    volumes:
-      - ${CONFIG_DIR}/nzbget:/config
-      - ${DOWNLOAD_DIR}/nzb:/downloads/nzb
 
   sonarr:
     image: ghostserverd/sonarr
