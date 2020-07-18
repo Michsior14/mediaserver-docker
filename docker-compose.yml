@@ -227,6 +227,7 @@ services:
 
   cron_scheduler:
     image: funkyfuture/deck-chores:1
+    container_name: cron_scheduler
     restart: unless-stopped
     environment:
       - TIMEZONE=${TIMEZONE}
