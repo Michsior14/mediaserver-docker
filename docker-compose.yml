@@ -75,7 +75,7 @@ services:
       - ${DOWNLOAD_DIR}:/downloads
       - ${MEDIA_DIR}:/media
     labels:
-      deck-chores.garbage-collector.command: sh -c "/usr/local/bin/transmission-garbagecollect.sh >> /media/transmissiongc.log 2>&1"
+      deck-chores.garbage-collector.command: sh -c "/usr/local/bin/transmission-garbagecollect.sh"
       deck-chores.garbage-collector.interval: 5m
 
   filebot:
