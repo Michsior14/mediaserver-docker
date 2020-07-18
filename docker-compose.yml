@@ -74,6 +74,9 @@ services:
       - ${CONFIG_DIR}/transmission:/config
       - ${DOWNLOAD_DIR}:/downloads
       - ${MEDIA_DIR}:/media
+    labels:
+      deck-chores.garbage_collector.command: sh -c "/usr/local/bin/transmission-garbagecollect.sh >> /media/transmissiongc.log 2>&1"
+      deck-chores.garbage_collector.interval: 5m
 
   filebot:
     image: ghostserverd/filebot:4.9.x
@@ -221,3 +224,11 @@ services:
       - "${HEIMDALL_SSL_PORT}:443"
     volumes:
       - ${CONFIG_DIR}/heimdall:/config
+
+  cron_scheduler:
+    image: funkyfuture/deck-chores:1
+    restart: unless-stopped
+    environment:
+      - TIMEZONE=${TIMEZONE}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
