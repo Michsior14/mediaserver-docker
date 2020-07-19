@@ -28,6 +28,7 @@ services:
       default:
         aliases:
           - transmission
+          - qbittorrent
           - sonarr
           - radarr
           - bazarr
@@ -37,6 +38,7 @@ services:
       - "${BAZARR_PORT}:6767"
       - "${SONARR_PORT}:8989"
       - "${JACKETT_PORT}:9117"
+      - "${QBIT_WEBUI_PORT}:${QBIT_WEBUI_PORT}"
       - "${TRANS_WEBUI_PORT}:${TRANS_WEBUI_PORT}"
       # TRANS_CONNECTION_PORT may need to be port forwarded by your VPN
       - "${TRANS_CONNECTION_PORT}:${TRANS_CONNECTION_PORT}"
@@ -51,6 +53,23 @@ services:
     volumes:
       - ${CONFIG_DIR}/wireguard:/etc/wireguard
       - /lib/modules:/lib/modules
+
+  qbittorrent:
+    image: linuxserver/qbittorrent
+    container_name: qbittorrent
+    restart: always
+    network_mode: "service:wireguard"
+    depends_on:
+      - wireguard
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - WEBUI_PORT=${QBIT_WEBUI_PORT}
+    volumes:
+      - ${CONFIG_DIR}/qbittorrent:/config
+      - ${DOWNLOAD_DIR}:/downloads
+      - ${MEDIA_DIR}:/media
 
   transmission:
     image: ghostserverd/transmission-combustion
