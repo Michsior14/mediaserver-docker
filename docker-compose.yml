@@ -47,7 +47,7 @@ services:
       - LOCAL_NETWORK=${LOCAL_NETWORK}
       - IPTABLES_MASQ=0
       # space separated list of docker service names to make addressable
-      - SERVICE_NAMES=filebot heimdall tautulli plex
+      - SERVICE_NAMES=filebot jackett bazarr radarr sonarr transmission qbittorrent heimdall tautulli plex
       # local TLD to use when routing DNS requests which requires aliases for each service to be addressable from within the wireguard network
       # - LOCAL_TLD=ghost
     volumes:
