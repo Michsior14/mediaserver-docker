@@ -42,13 +42,13 @@ case $ARG_CATEGORY in
 esac
 
 
-if [[ $REFRESH_URL != "" ]]; then
+if [ $REFRESH_URL != "" ]; then
     REFRESH_CMD=$(\
         echo curl \
-            -d '{"name":"${REFRESH_NAME}"}' \
-            -H "Content-Type: application/json" \
+            -d \"{\\"name\\":\\"${REFRESH_NAME}\\"}\" \
+            -H \"Content-Type: application/json\" \
             -X POST \
             ${REFRESH_URL})
-    echo $REFRESH_CMD >> config/database-refresh.log
+    echo $REFRESH_CMD >> /config/database-refresh.log
     eval $REFRESH_CMD
 fi
