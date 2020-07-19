@@ -27,7 +27,6 @@ services:
     networks:
       default:
         aliases:
-          - transmission
           - qbittorrent
           - sonarr
           - radarr
@@ -40,14 +39,13 @@ services:
       - "${JACKETT_PORT}:9117"
       - "${QBIT_WEBUI_PORT}:${QBIT_WEBUI_PORT}"
       - "${TRANS_WEBUI_PORT}:${TRANS_WEBUI_PORT}"
-      # TRANS_CONNECTION_PORT may need to be port forwarded by your VPN
-      - "${TRANS_CONNECTION_PORT}:${TRANS_CONNECTION_PORT}"
-      - "${TRANS_CONNECTION_PORT}:${TRANS_CONNECTION_PORT}/udp"
+      - "${QBIT_CONNECTION_PORT}:${QBIT_CONNECTION_PORT}"
+      - "${QBIT_CONNECTION_PORT}:${QBIT_CONNECTION_PORT}/udp"
     environment:
       - LOCAL_NETWORK=${LOCAL_NETWORK}
       - IPTABLES_MASQ=0
       # space separated list of docker service names to make addressable
-      - SERVICE_NAMES=filebot jackett bazarr radarr sonarr transmission qbittorrent heimdall tautulli plex
+      - SERVICE_NAMES=filebot jackett bazarr radarr sonarr qbittorrent heimdall tautulli plex
       # local TLD to use when routing DNS requests which requires aliases for each service to be addressable from within the wireguard network
       # - LOCAL_TLD=ghost
     volumes:
@@ -67,36 +65,40 @@ services:
       - TZ=${TIMEZONE}
       - WEBUI_PORT=${QBIT_WEBUI_PORT}
       - FILEBOT_PORT=${FILEBOT_PORT}
+      - SONARR_PORT=${FILEBOT_PORT}
+      - RADARR_PORT=${FILEBOT_PORT}
+      - SONARR_API_KEY=${SONARR_API_KEY}
+      - RADARR_API_KEY=${RADARR_API_KEY}
     volumes:
       - ${CONFIG_DIR}/qbittorrent:/config
       - ${DOWNLOAD_DIR}:/downloads
       - ${MEDIA_DIR}:/media
 
-  transmission:
-    image: ghostserverd/transmission-combustion
-    container_name: transmission
-    restart: always
-    network_mode: "service:wireguard"
-    depends_on:
-      - wireguard
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-      - TRANS_WEBUI_USER=${TRANS_WEBUI_USER}
-      - TRANS_WEBUI_PASS=${TRANS_WEBUI_PASS}
-      - TRANS_WEBUI_PORT=${TRANS_WEBUI_PORT}
-      - TRANS_MAX_RETENTION=${TRANS_MAX_RETENTION}
-      - TRANS_MAX_RATIO=${TRANS_MAX_RATIO}
-      - TRANS_CONNECTION_PORT=${TRANS_CONNECTION_PORT}
-      - FILEBOT_PORT=${FILEBOT_PORT}
-    volumes:
-      - ${CONFIG_DIR}/transmission:/config
-      - ${DOWNLOAD_DIR}:/downloads
-      - ${MEDIA_DIR}:/media
-    labels:
-      deck-chores.garbage-collector.command: sh -c "/usr/local/bin/transmission-garbagecollect.sh"
-      deck-chores.garbage-collector.interval: 5m
+  # transmission:
+  #   image: ghostserverd/transmission-combustion
+  #   container_name: transmission
+  #   restart: always
+  #   network_mode: "service:wireguard"
+  #   depends_on:
+  #     - wireguard
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TIMEZONE}
+  #     - TRANS_WEBUI_USER=${TRANS_WEBUI_USER}
+  #     - TRANS_WEBUI_PASS=${TRANS_WEBUI_PASS}
+  #     - TRANS_WEBUI_PORT=${TRANS_WEBUI_PORT}
+  #     - TRANS_MAX_RETENTION=${TRANS_MAX_RETENTION}
+  #     - TRANS_MAX_RATIO=${TRANS_MAX_RATIO}
+  #     - TRANS_CONNECTION_PORT=${TRANS_CONNECTION_PORT}
+  #     - FILEBOT_PORT=${FILEBOT_PORT}
+  #   volumes:
+  #     - ${CONFIG_DIR}/transmission:/config
+  #     - ${DOWNLOAD_DIR}:/downloads
+  #     - ${MEDIA_DIR}:/media
+  #   labels:
+  #     deck-chores.garbage-collector.command: sh -c "/usr/local/bin/transmission-garbagecollect.sh"
+  #     deck-chores.garbage-collector.interval: 5m
 
   filebot:
     image: ghostserverd/filebot:4.9.x
@@ -244,12 +246,11 @@ services:
       - "${HEIMDALL_SSL_PORT}:443"
     volumes:
       - ${CONFIG_DIR}/heimdall:/config
-
-  cron_scheduler:
-    image: funkyfuture/deck-chores:1
-    container_name: cron_scheduler
-    restart: unless-stopped
-    environment:
-      - TIMEZONE=${TIMEZONE}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+  # cron_scheduler:
+  #   image: funkyfuture/deck-chores:1
+  #   container_name: cron_scheduler
+  #   restart: unless-stopped
+  #   environment:
+  #     - TIMEZONE=${TIMEZONE}
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
