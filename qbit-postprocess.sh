@@ -45,7 +45,7 @@ esac
 if [ $REFRESH_URL != "" ]; then
     REFRESH_CMD=$(\
         echo curl \
-            -d \"{\\"name\\":\\"${REFRESH_NAME}\\"}\" \
+            -d \"{\\\"name\\\":\\\"${REFRESH_NAME}\\\"}\" \
             -H \"Content-Type: application/json\" \
             -X POST \
             ${REFRESH_URL})
