@@ -53,7 +53,7 @@ services:
       - /lib/modules:/lib/modules
 
   qbittorrent:
-    image: linuxserver/qbittorrent
+    image: michaukrieg/qbittorrent-ghost
     container_name: qbittorrent
     restart: always
     network_mode: "service:wireguard"
